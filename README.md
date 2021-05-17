@@ -40,6 +40,6 @@ In the following solution, three semaphores are used as explained below:
 The variables of  active_writers, waiting_writers, active_readers, waiting_readers are used for counting the number of currently waiting and active processes. 
 
 
-
+ 
 
 
