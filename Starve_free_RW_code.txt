@@ -1,0 +1,69 @@
+//Reading processes:
+
+	    Wait(mutex); 
+			 if(active_writers == 0 && waiting_writers == 0){
+				 Signal(read_sem);  
+				 active_readers = active_readers + 1; 
+			 }
+			 else{
+				 waiting_readers = waiting_readers + 1; 
+			 }
+
+		Signal(mutex);
+	   Wait(read_sem);  
+
+	   
+	   /*
+	   
+	   
+	   READ THE DATA IN CRITICAL SECTION
+	   
+	   
+	   */
+
+	   Wait(mutex);
+	   active_readers = active_readers - 1; 
+	   if(active_readers == 0 && waiting_writers>0){
+			while(waiting_writers > 0){
+			   active_writers = active_writers+1;  
+			   waiting_writers = waiting_writers-1;
+			   Signal(write_sem);  
+			}
+	   }
+	   Signal(mutex);
+	   
+	   
+//Writing Processes:
+
+		Wait(mutex); 
+			 if(active_readers == 0 && waiting_readers == 0){
+				 Signal(write_sem);  
+				 active_writers = active_writers + 1; 
+			 }
+			  
+			else{
+				 waiting_writers = waiting_writers + 1; 
+			}
+		  
+		Signal(mutex);
+	   Wait(write_sem);  
+
+	   
+	   /*
+	   
+	   
+	   WRITE THE DATA IN CRITICAL SECTION
+	   
+	   
+	   */
+
+	   Wait(mutex);
+	   active_writers = active_writers - 1; 
+	   if(active_writers == 0 && waiting_readers>0){
+			while(waiting_readers > 0){
+			   active_readers = active_readers+1;  
+			   waiting_readers = waiting_readers-1;
+			   Signal(read_sem);  
+			}
+	   }
+	   Signal(mutex);
